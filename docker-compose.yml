@@ -1,0 +1,51 @@
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - ./backend:/var/www
+      - ./frontend/dist:/var/www/frontend
+      - ./docker/nginx:/etc/nginx/conf.d
+    depends_on:
+      - php
+      - frontend
+
+  php:
+    build: ./docker/php
+    volumes:
+      - ./backend:/var/www
+    working_dir: /var/www
+    command: sh -c "sleep 10 && php-fpm"
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: laravel
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "127.0.0.1:8081:80"
+    depends_on:
+      - db
+
+  frontend:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    command: sh -c "npm install && npm run dev"
+    ports:
+      - "127.0.0.1:5173:5173"
+
+volumes:
+  dbdata:
+  frontend_node_modules:

@@ -1,0 +1,450 @@
+<template>
+  <div class="container">
+    <div class="bs-docs-section" id="examples">
+      <div class="row">
+        <div class="col-md-12 mt-5">
+          <h2 class="mb-3">My Watched List</h2>
+          <p class="padding-left" v-if="!hasLoaded">Loading movies ...</p>
+          <p class="padding-left" v-if="hasLoaded && displayMovies.length != 0">This is your library of all the movies you've watched. Feel free to write a review for a movie, if you'd like.</p>
+          <p class="padding-left" v-if="hasLoaded && displayMovies.length === 0">There are currently no movies marked as 'watched' in My Watched List.<br>
+          To update My Watched List, simply browse your <a href="/watchlist" target="_self">My Watch List</a>, select a movie you'd like to watch, and move it to My Watched List after you have seen it. <br>
+          You can also take this opportunity to write a review of the movie later on My Watched List.</p>
+      </div>
+    </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="bs-component">
+            <table id="movie_table" class="table-striped">
+              <tbody v-if="hasLoaded && displayMovies.length != 0">
+                <tr v-for="movie in displayMovies" :key="movie.id">
+                  <td class="td_image">
+                    <ul class="enlarge">
+                      <!--We give the list a class so that we can style it seperately from other unordered lists-->
+                      <!--First Image-->
+                      <li>
+                        <img
+                          v-if="movie.Poster === 'N/A'"
+                          src="@/assets/placeholder.jpg"
+                          width="27"
+                          height="40"
+                          alt="No Poster Available"
+                        />
+                        <img
+                          v-else="movie.Poster"
+                          :src="movie.Poster"
+                          width="27"
+                          height="40"
+                          alt="Movie Poster"
+                        /><!--thumbnail image-->
+                        <span>
+                          <!--span contains the popup image-->
+                          <img
+                            v-if="movie.Poster === 'N/A'"
+                            src="@/assets/placeholder.jpg"
+                            style="width: 800%; height: 800%"
+                            alt="No Poster Available"
+                          />
+                          <img
+                            v-else="movie.Poster"
+                            :src="movie.Poster"
+                            style="width: 800%; height: 800%"
+                            alt="Movie Poster"
+                          />
+                          <!--popup image-->
+                        </span>
+                      </li>
+                    </ul>
+                  </td>
+                  <td>{{ movie.Title }}</td>
+                  <td>{{ movie.Year }}</td>
+                  <td class="td_delete" @click="handleButtonClick">
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm about"
+                      style="margin: 1px 2px"
+                      :data-imdbid="movie.imdbID"
+                    >
+                      About this movie
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm watched"
+                      style="margin: 1 2px"
+                      :data-imdbid="movie.imdbID"
+                    >
+                      Rate this movie
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-sm delete"
+                      style="margin: 1px 2px"
+                      :data-imdbid="movie.imdbID"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="bs-component">
+            <div id="someContainer"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer v-if="hasLoaded && displayMovies.length != 0">
+      <div class="row">
+        <div class="col-lg-12">
+          <ul class="list-unstyled">
+            <li class="pull-right"><a id="ScrollToTop" href="#" target="_self">Back up</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <movie-modal :movie-info="movieInfo" :movie-review="movieReview"></movie-modal>
+  <review-modal
+    :key="clickedImdbId"
+    :movie-info="reviewMovieInfo"
+    :selected-imdb-id="clickedImdbId"
+    :user-id="user?.id || ''"
+  ></review-modal>
+</template>
+
+<script>
+import axios from 'axios'
+//import config from '@/config.js'
+axios.defaults.withCredentials = true
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
+import { useAccountStore } from '@/stores/account' // Import the account store
+import { mapState } from 'pinia'
+import { Modal } from 'bootstrap'
+import MovieModal from '../components/MovieModal.vue' // Import the component
+import ReviewModal from '../components/ReviewModal.vue' // Import the component
+
+export default {
+  data() {
+    return {
+      hasLoaded: false,
+      movies: [], // To hold the fetched movies
+      clickedImdbId: '', // Store clicked imdbId
+      movieInfo: {}, // To hold the movie info
+      reviewMovieInfo: {}, // To hold the review modal movie info
+      movieReview: [] // Store reviews
+    }
+  },
+  components: {
+    MovieModal, // Register the component
+    ReviewModal // Register the component
+  },
+  computed: {
+    ...mapState(useAccountStore, ['user']), // Map the user state to a local computed property
+    displayMovies() {
+      // Legacy seed data may contain non-IMDb ids; hide those entries in the watched list UI.
+      return this.movies.filter((movie) => /^tt\d+$/.test(movie.imdbID || ''))
+    }
+  },
+  watch: {
+    user(newUser) {
+      if (!newUser) {
+        this.movies = []
+        this.$router.push('/login')
+      }
+    }
+  },
+  mounted() {
+    this.fetchMovies() // Moved fetchMovies to mounted hook to ensure data is loaded before attaching event listeners
+  },
+
+  methods: {
+    async handleButtonClick(event) {
+      const target = event.target.closest('button')
+      if (!target) return
+      const imdbID = target.getAttribute('data-imdbid')
+
+      if (target.classList.contains('delete')) {
+        this.handleDeleteClick(target)
+      } else if (target.classList.contains('about')) {
+        await this.fetchDetailedInfo(imdbID)
+        await this.fetchReviews(imdbID)
+        Modal.getOrCreateInstance(document.querySelector('.movie-modal')).show()
+      } else if (target.classList.contains('watched')) {
+        this.clickedImdbId = imdbID
+        await this.fetchReviewMovieInfo(imdbID)
+        Modal.getOrCreateInstance(document.querySelector('.review-modal')).show()
+      }
+    },
+    async fetchMovies() {
+      if (!this.user) {
+        this.hasLoaded = true
+        this.movies = []
+        return
+      }
+      try {
+        const response = await axios.get(`/users/${this.user.id}/watchedlist`)
+        this.movies = response.data // Assuming the API response contains an array of movies
+      } catch (error) {
+        console.error('Error fetching movies:', error)
+      } finally {
+        this.hasLoaded = true
+      }
+    },
+    async deleteMovie(id) {
+      try {
+        const response = await axios.delete(`/users/${this.user.id}/watchedlist/${id}`)
+        console.log(response)
+      } catch (error) {
+        console.error('Error deleting movie:', error)
+      }
+    },
+    handleDeleteClick(target) {
+      if (!confirm('Do you really want to delete the movie from your Watched-List?')) return
+      const id = target.getAttribute('data-imdbid')
+      this.deleteMovie(id)
+      target.style.backgroundColor = '#ff2222'
+      this.fadeOutAndRemove(target.closest('tr'))
+    },
+    fadeOutAndRemove(element) {
+      var opacity = 1
+      var interval = setInterval(() => {
+        if (opacity > 0) {
+          opacity -= 0.1
+          element.style.opacity = opacity
+        } else {
+          clearInterval(interval)
+          element.parentNode.removeChild(element)
+        }
+      }, 40) // Adjust the fading speed as needed
+    },
+    handleAboutClick() {},
+    async fetchDetailedInfo(imdbID) {
+      this.movieInfo = {}
+      try {
+        const response = await axios.get('/movies/details', { params: { imdbID } })
+        this.movieInfo = response.data
+      } catch (error) {
+        console.error('Error fetching detailed info:', error)
+      }
+    },
+    async fetchReviewMovieInfo(imdbID) {
+      this.reviewMovieInfo = {}
+      try {
+        const response = await axios.get('/movies/details', { params: { imdbID } })
+        this.reviewMovieInfo = response.data
+      } catch (error) {
+        console.error('Error fetching review movie info:', error)
+      }
+    },
+    handleReviewClick() {},
+    async fetchReviews(imdbID) {
+      this.movieReview = []
+      try {
+        const response = await axios.get(`/reviews/${imdbID}`)
+        this.movieReview = response.data
+      } catch (error) {
+        console.error('Error fetching reviews:', error)
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+@import '@/assets/font-awesome.min.css';
+@import '@/assets/hovermoviepic.css';
+
+:root {
+  --grey: #dddddd;
+}
+
+#movie_table {
+  width: 100%;
+}
+
+#movie_table td {
+  min-width: 40px;
+  text-align: left;
+  padding: 2px 0;
+  height: 42px;
+}
+
+td.td_delete {
+  text-align: right !important;
+}
+
+.input_movie {
+  width: 240px;
+  background: transparent;
+  border: none;
+}
+
+.input_year {
+  width: 40px;
+  background: transparent;
+  border: none;
+}
+
+/* Buttons */
+.watched,
+.about,
+.delete {
+  border: rgb(3, 24, 93) solid 1px;
+  color: #ffca2c;
+  background-color: #2c3035;
+}
+.watched:hover,
+.delete:hover,
+.about:hover {
+  color: #ffffff;
+  background-color: #727d87;
+}
+
+/* Stars */
+.fa,
+.fas {
+  font-weight: 900;
+  color: gold;
+}
+
+#movie_table td {
+  min-width: 40px;
+  text-align: left;
+  padding: 2px 0;
+  height: 42px;
+}
+
+.table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: #eeeeee;
+}
+
+td,
+th {
+  padding: 0;
+}
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+User-Agent-Stylesheet td {
+  display: table-cell;
+  vertical-align: inherit;
+}
+
+table {
+  font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+table {
+  background-color: transparent;
+}
+
+th {
+  text-align: left;
+}
+
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 21px;
+}
+
+.table > * > tr > th,
+.table > * > tr > td {
+  padding: 8px;
+  line-height: 1.42857143;
+  vertical-align: top;
+  border-top: 1px solid var(--grey);
+}
+
+.table > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 2px solid var(--grey);
+}
+
+.table > caption + thead > tr:first-child > th,
+.table > colgroup + thead > tr:first-child > th,
+.table > thead:first-child > tr:first-child > th,
+.table > caption + thead > tr:first-child > td,
+.table > colgroup + thead > tr:first-child > td,
+.table > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+
+.table > tbody + tbody {
+  border-top: 2px solid var(--grey);
+}
+
+.table .table {
+  background-color: #ffffff;
+}
+
+.table-condensed > * > tr > th,
+.table-condensed > * > tr > td {
+  padding: 5px;
+}
+
+.table-bordered {
+  border: 1px solid var(--grey);
+}
+
+.table-bordered > * > tr > th,
+.table-bordered > * > tr > td {
+  border: 1px solid var(--grey);
+}
+
+.table-bordered > thead > tr > th,
+.table-bordered > thead > tr > td {
+  border-bottom-width: 2px;
+}
+
+.table-striped > tbody > tr:nth-child(odd) > td,
+.table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: #eeeeee;
+}
+
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+  background-color: #f5f5f5;
+}
+
+table col[class*='col-'] {
+  position: static;
+  float: none;
+  display: table-column;
+}
+
+table td[class*='col-'],
+table th[class*='col-'] {
+  position: static;
+  float: none;
+  display: table-cell;
+}
+
+.pull-right {
+  float: right !important;
+}
+
+a {
+  color: #008cba;
+  text-decoration: none;
+}
+
+.list-unstyled {
+  padding-top: 8px;
+}
+</style>
