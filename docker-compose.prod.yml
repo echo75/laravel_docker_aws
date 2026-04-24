@@ -17,7 +17,7 @@ services:
       - ./backend:/var/www
     working_dir: /var/www
     env_file:
-      - ./backend/.env.prod
+      - ./backend/.env.production
     command: sh -c "php artisan config:clear && php artisan migrate --force && php-fpm"
     restart: unless-stopped
 
