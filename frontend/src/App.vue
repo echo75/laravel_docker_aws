@@ -64,7 +64,7 @@ div(v-else)
       .row
         .col-12.text-center.text-white
           p.mt-2.mb-2
-            | &copy; {{ currentYear }} by Johan Hedman. Proudly created with the Laravel, MySQL and Vue.js.
+            | &copy; {{ currentYear }} by Johan Hedman. Proudly created with Laravel, MySQL and Vue.js.
 </template>
 
 <style scoped>

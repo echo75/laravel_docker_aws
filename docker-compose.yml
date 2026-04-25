@@ -2,7 +2,7 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - ./backend:/var/www
       - ./frontend/dist:/var/www/frontend
