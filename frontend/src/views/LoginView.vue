@@ -72,7 +72,7 @@ import '../assets/login.css' // Import login.css only for this component
         <div class="card-footer">
           <div class="d-flex justify-content-center links">
             <span>Don&apos;t have an account?</span>
-            <a href="/signup">Sign Up</a>
+            <RouterLink to="/signup">Sign Up</RouterLink>
           </div>
           <div class="d-flex justify-content-center">
             <a href="#">Forgot your password?</a>
