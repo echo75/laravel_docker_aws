@@ -5,18 +5,18 @@
         <div class="col-md-12 mt-5">
           <h2 class="mb-3">My Movie DB</h2>
 
-          <p class="padding-left">
+          <div>
             My Movie DB serves as a virtual library for organizing the movies you plan to watch and
             those you've already seen.
             <br>
-            You can also share reviews with other users on the My Movie DB platform.
-          </p>
+            You can also share reviews with other users on the My Movie DB platform.<br><br>
+          </div>
 
-          <p class="padding-left">
-            <strong>Here's a more concise and clear way to express the process:</strong>
-          </p>
+          <div>
+            <strong>Here's a more concise and clear way to express the process:</strong><br><br>
+          </div>
 
-          <ol class="margin-left">
+          <ol>
             <li>Begin by searching for a movie using the search function.</li>
             <li>
               Once you find a movie, add it to your "My Watch List." Here, you can access movie
@@ -32,7 +32,7 @@
             </li>
           </ol>
 
-          <div class="padding-left">
+          <div>
             <strong>How to sign up and log in:</strong>
             <br>
             If you want to benefit from the functionality of the site, it's best to log in - with or
@@ -64,3 +64,4 @@ a {
   text-decoration: none;
 }
 </style>
+
