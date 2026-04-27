@@ -13,7 +13,7 @@
             <br /><br />
             Use the login tab at the top right to log in.
             <br /><br />
-            The My Movie DB has a Vue.js frontend with a Node.js backend. The backend is using Express.js and MongoDB.
+            The My Movie DB has a Vue.js frontend and a backend using Laravel and MySQL.
             <br /><br /><br /><br />
           </div>
         </div>

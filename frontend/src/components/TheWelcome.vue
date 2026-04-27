@@ -35,11 +35,17 @@
           <div>
             <strong>How to sign up and log in:</strong>
             <br>
-            If you want to benefit from the functionality of the site, it's best to log in - with or
-            without your own account.
+            If you want to benefit from the functionality of the site, it's best to log in after signing up.<br>
+            You can create an account using your email and password, or you can use the provided account for quick access!<br>
+<br>
+            <strong>This is the provided account:</strong>
+<br>
+            User: johan@hedman.de<br>
+            PWD: 123456<br>
             <br>
-            For more information, please visit the <a href="/about" target="_self">About</a> page!
+            For more information, please visit the <a href="/about" target="_self">About</a> page!<br>
             <br>
+            <strong>This is just a demo project to showcase the use of Vue.js for the frontend and Laravel for the backend.</strong><br>
             <br>
             <br>
             <br>
