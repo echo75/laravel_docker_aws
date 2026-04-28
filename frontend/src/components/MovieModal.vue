@@ -20,8 +20,8 @@
               </div>
               <div class="col content">
                 <div class="plott">
-                  <h2>{{ movieInfo?.Title }}</h2>
-                  <p>{{ movieInfo?.Plot }}</p>
+                  <h2 style="color:#000000;">{{ movieInfo?.Title }}</h2>
+                  <p style="color:#000000;"> {{ movieInfo?.Plot }}</p>
                 </div>
 
                 <div class="ratingbox">
@@ -38,33 +38,33 @@
 
                 <div>
                   <h4>Actors:</h4>
-                  <p>{{ movieInfo?.Actors }}</p>
+                  <p style="color:#000000;">{{ movieInfo?.Actors }}</p>
                 </div>
                 <div>
                   <h4>Director:</h4>
-                  <p>{{ movieInfo?.Director }}</p>
+                  <p style="color:#000000;">{{ movieInfo?.Director }}</p>
                 </div>
                 <div>
                   <h4>Genre:</h4>
-                  <p>{{ movieInfo?.Genre }}</p>
+                  <p style="color:#000000;">{{ movieInfo?.Genre }}</p>
                 </div>
                 <div>
                   <h4>Released:</h4>
-                  <p>{{ movieInfo?.Released }}</p>
+                  <p style="color:#000000;">{{ movieInfo?.Released }}</p>
                 </div>
                 <div>
                   <h4>Runtime:</h4>
-                  <p>{{ movieInfo?.Runtime }}</p>
+                  <p style="color:#000000;">{{ movieInfo?.Runtime }}</p>
                 </div>
                 <div class="reviews">
                   <h4>Reviews:</h4>
                   <div v-if="movieReview.length === 0">
-                    <p>No reviews yet</p>
+                    <p style="color:#000000;">No reviews yet</p>
                   </div>
                   <div v-else>
                     <div v-for="review in movieReview" :key="review._id">
                       <h5>{{ review.author.firstName }} {{ review.author.surName }}</h5>
-                      <p>{{ review.text }}</p>
+                      <p style="color:#000000;">{{ review.text }}</p>
                     </div>
                   </div>
                 </div>
