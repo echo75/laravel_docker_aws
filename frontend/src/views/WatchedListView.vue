@@ -4,11 +4,11 @@
       <div class="row">
         <div class="col-md-12 mt-5">
           <h2 class="mb-3">My Watched List</h2>
-          <p class="padding-left" v-if="!hasLoaded">Loading movies ...</p>
-          <p class="padding-left" v-if="hasLoaded && displayMovies.length != 0">This is your library of all the movies you've watched. Feel free to write a review for a movie, if you'd like.</p>
-          <p class="padding-left" v-if="hasLoaded && displayMovies.length === 0">There are currently no movies marked as 'watched' in My Watched List.<br>
+          <div class="padding-left" v-if="!hasLoaded">Loading movies ...</div>
+          <div class="padding-left" v-if="hasLoaded && displayMovies.length != 0">This is your library of all the movies you've watched. Feel free to write a review for a movie, if you'd like.</div>
+          <div class="padding-left" v-if="hasLoaded && displayMovies.length === 0">There are currently no movies marked as 'watched' in My Watched List.<br>
           To update My Watched List, simply browse your <a href="/watchlist" target="_self">My Watch List</a>, select a movie you'd like to watch, and move it to My Watched List after you have seen it. <br>
-          You can also take this opportunity to write a review of the movie later on My Watched List.</p>
+          You can also take this opportunity to write a review of the movie later on My Watched List.</div>
       </div>
     </div>
       <div class="row">
@@ -254,9 +254,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 @import '@/assets/font-awesome.min.css';
 @import '@/assets/hovermoviepic.css';
+
+@layer scoped {
 
 :root {
   --grey: #dddddd;
@@ -446,5 +448,11 @@ a {
 
 .list-unstyled {
   padding-top: 8px;
+}
+.padding-left {
+  padding-left: 0px;
+  padding-bottom: 14px;
+}
+
 }
 </style>

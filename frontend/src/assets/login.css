@@ -1,6 +1,6 @@
 @import '@/assets/font-awesome.min.css';
 
-@import '@/assets/bootstrap411.css';
+/* Bootstrap wird global in main.js geladen */
 body {
   background-image: url('../assets/matterhorn.jpg');
   background-size: cover;
@@ -53,9 +53,9 @@ p {
   top: -45px;
 }
 
-.input-group-prepend span {
+.input-group-text span {
   width: 50px;
-  background-color: #ffc312;
+  /* background-color: #ffc312; */
   color: black;
   border: 0 !important;
 }

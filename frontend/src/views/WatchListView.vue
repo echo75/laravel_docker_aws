@@ -4,11 +4,11 @@
       <div class="row">
         <div class="col-md-12 mt-5">
           <h2 class="mb-3">My Watch List</h2>
-          <p class="padding-left" v-if="!hasLoaded">Loading movies ...</p>
-          <p class="padding-left" v-if="hasLoaded && movies.length != 0">Here is a selection of movies you've stored from the OMDd, and you're looking forward to watching them on your TV.<br>
-            But first read about the movie and decide whether you'd like to watch it or not.</p>
-          <p class="padding-left" v-if="hasLoaded && movies.length === 0">You don't have any movies saved from the OMDd that you're eager to watch on your TV.<br>
-            Navigate to the <a href="/search" target="_self">Search</a> function and find a great movie for yourself.</p>
+          <div class="padding-left" v-if="!hasLoaded">Loading movies ...</div>
+          <div class="padding-left" v-if="hasLoaded && movies.length != 0">Here is a selection of movies you've stored from the OMDd, and you're looking forward to watching them on your TV.<br>
+            But first read about the movie and decide whether you'd like to watch it or not.</div>
+          <div class="padding-left" v-if="hasLoaded && movies.length === 0">You don't have any movies saved from the OMDd that you're eager to watch on your TV.<br>
+            Navigate to the <a href="/search" target="_self">Search</a> function and find a great movie for yourself.</div>
       </div>
     </div>
       <div class="row">
@@ -246,9 +246,11 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 @import '@/assets/font-awesome.min.css';
 @import '@/assets/hovermoviepic.css';
+
+@layer scoped {
 
 :root {
   --grey: #dddddd;
@@ -438,5 +440,11 @@ a {
 
 .list-unstyled {
   padding-top: 8px;
+}
+.padding-left {
+  padding-left: 0px;
+  padding-bottom: 14px;
+}
+
 }
 </style>

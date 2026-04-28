@@ -35,7 +35,7 @@ export default {
     }
   }
 }
-import '../assets/login.css' // Import login.css only for this component
+
 </script>
 
 <template>
@@ -48,24 +48,20 @@ import '../assets/login.css' // Import login.css only for this component
         </div>
         <div class="card-body">
           <form v-if="!user" @submit.prevent="doLogin">
-            <div class="input-group form-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fas fa-envelope"></i>
-                </span>
-              </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text">
+                <i class="fas fa-envelope"></i>
+              </span>
               <input id="email" v-model="email" class="form-control" type="email" placeholder="email" required autofocus>
             </div>
-            <div class="input-group form-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fas fa-key"></i>
-                </span>
-              </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text">
+                <i class="fas fa-key"></i>
+              </span>
               <input id="password" v-model="password" class="form-control" type="password" placeholder="password" required>
             </div>
-            <div class="form-group">
-              <input class="btn float-right login_btn" type="submit" value="Login">
+            <div class="mb-3">
+              <input class="btn float-end login_btn" type="submit" value="Login">
             </div>
           </form>
         </div>
@@ -74,7 +70,7 @@ import '../assets/login.css' // Import login.css only for this component
             <span>Don&apos;t have an account?</span>
             <RouterLink to="/signup">Sign Up</RouterLink>
           </div>
-          <div class="d-flex justify-content-center">
+          <div class="d-flex justify-content-center" style="padding-bottom: 12px;">
             <a href="#">Forgot your password?</a>
           </div>
         </div>
@@ -83,8 +79,13 @@ import '../assets/login.css' // Import login.css only for this component
   </div>
 </template>
 <style>
+
+@import '../assets/login.css';
+
+@layer scoped {
+
 .card {
-  height: 370px !important;
+  height: 350px !important;
 }
 
 @media (min-width: 1400px) {
@@ -105,5 +106,12 @@ import '../assets/login.css' // Import login.css only for this component
   padding-left: calc(var(--bs-gutter-x) * 0.5);
   margin-right: auto;
   margin-left: auto;
+}
+
+span.input-group-text {
+  background-color: #ffc312 !important;
+  border: 2px solid #ffc312 !important;  
+}
+
 }
 </style>
