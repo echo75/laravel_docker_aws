@@ -103,7 +103,11 @@ export default {
   methods: {}
 }
 </script>
-<style scoped>
+<style>
+@layer scoped {
+div.modal {
+  color: #000000;
+}
 div.rating {
   display: inline-block;
   padding-bottom: 12px;
@@ -143,5 +147,6 @@ div.rating {
   height: auto;
   text-align: left;
   padding-top: 30px;
+}
 }
 </style>
