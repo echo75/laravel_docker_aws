@@ -4,4 +4,4 @@
 - Frontend: Vue.js
 - API von Omdb
 - Docker-Setup
-- Deployed auf AWS
+- Deployed auf Amazon EC2 - AWS
